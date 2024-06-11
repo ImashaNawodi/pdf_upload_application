@@ -1,8 +1,18 @@
-const express = require('express');
-const router = express.Router();
-const { uploadPdf, createPdf, getPdfs } = require('../controller/pdfController');
-const { protect } = require('../middleware/authMiddleware');
+const router = require('express').Router();
+const { upload, viewAllPdfs, previewPdf } = require('../controller/pdfController');
+const uploads = require('../middleware/multer');
 
-router.route('/').post(protect, uploadPdf, createPdf).get(protect, getPdfs);
+// Route to upload a PDF
+router.post("/upload/:accountId", uploads.single('file'), (req, res) => {
+    console.log("Received a request to create a guidance:", req.body);
+    upload(req, res);
+});
 
-module.exports = router;
+// Route to view all PDFs for a specific user
+router.get('/view-all-pdf/:accountId', viewAllPdfs);
+
+// Route to view a specific PDF
+router.get("/view-pdf/:accountId/:id", previewPdf);
+
+ 
+  module.exports = router;

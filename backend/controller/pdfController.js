@@ -1,61 +1,82 @@
-const asyncHandler = require('express-async-handler');
-const Pdf = require('../model/pdfModel');
-const multer = require('multer');
-const path = require('path');
+const Pdf = require("../model/pdfModel");
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename(req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+// Upload a PDF file
+exports.upload = async (req, res) => {
+  const accountId = req.params.accountId;
 
-const upload = multer({
-  storage,
-  fileFilter(req, file, cb) {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb('Only PDF files are allowed!', false);
+  try {
+    const { name } = req.body;
+
+    // Check if req.file is defined
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
-  },
-});
 
-// @desc    Upload PDF file
-// @route   POST /api/pdfs
-// @access  Private
-const uploadPdf = upload.single('pdf');
+    const file = req.file.path;
 
-const createPdf = asyncHandler(async (req, res) => {
-  const { originalname, filename, size } = req.file;
-  const pdf = await Pdf.create({
-    user: req.user._id,
-    filename: originalname,
-    path: filename,
-    size,
-  });
+    // Log the file path to ensure it's correct
+    console.log("File path:", file);
 
-  if (pdf) {
-    res.status(201).json(pdf);
-  } else {
-    res.status(400);
-    throw new Error('Invalid PDF data');
+    // Split the file path string using backslash as delimiter
+    const filePathParts = file.split("\\");
+
+    // Get the last part of the array, which is the file name
+    const fileNameWithTimestamp = filePathParts[filePathParts.length - 1];
+
+    // Split the file name using underscore as delimiter
+    const fileNameParts = fileNameWithTimestamp.split("_");
+
+    // Get the second part of the array, which is the actual file name
+    const actualName = fileNameParts.slice(1).join("_");
+
+    console.log("Actual File Name:", name);
+
+    // Rest of your code for creating and saving the pdf
+    const newPdf = new Pdf({ name: name ? name : actualName, file, accountId });
+
+    // Log the new pdf object to ensure it's correct
+    console.log("New pdf:", newPdf);
+
+    // Save the data in the database
+    await newPdf.save();
+
+    console.log("Saved to the database");
+    res.json({ pdf: newPdf, message: "File successfully uploaded" });
+  } catch (error) {
+    console.error("Error saving pdf:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+};
 
-// @desc    Get all PDFs
-// @route   GET /api/pdfs
-// @access  Private
-const getPdfs = asyncHandler(async (req, res) => {
-  const pdfs = await Pdf.find({ user: req.user._id });
-  res.json(pdfs);
-});
+// View all PDFs for a particular user
+exports.viewAllPdfs = async (req, res) => {
+  const accountId = req.params.accountId;
 
-module.exports = {
-  uploadPdf,
-  createPdf,
-  getPdfs,
+  try {
+    // Find PDFs based on the account ID
+    const pdfs = await Pdf.find({ accountId });
+
+    res.json(pdfs);
+  } catch (error) {
+    console.error("Error in viewAllPdfs:", error);
+    // Handle errors and send an appropriate response
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// View one specific PDF for a particular user
+exports.previewPdf = async (req, res) => {
+  const pdfId = req.params.id;
+
+  try {
+    const pdf = await Pdf.findById(pdfId);
+    if (!pdf) {
+      return res.status(404).json({ status: "PDF not found" });
+    }
+
+    res.status(200).json(pdf);
+  } catch (err) {
+    console.error("Error in previewPdf:", err.message);
+    res.status(500).json({ status: "Error with getting PDF", error: err.message });
+  }
 };
