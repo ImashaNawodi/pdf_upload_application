@@ -9,41 +9,36 @@ const uploadDirectory = 'uploads/';
 if (!fs.existsSync(uploadDirectory)) {
     fs.mkdirSync(uploadDirectory);
 }
+
 // configure how the files are stored
 const storage = multer.diskStorage({
-    destination:function(req, file, cb){
-        //where to store the file
+    destination: function(req, file, cb) {
+        // Callback to specify where to store the file
         cb(null, uploadDirectory);
     },
-    filename:function(req, file, cb){
+    filename: function(req, file, cb) {
+        // Callback to specify the file name
         cb(null, new Date().toISOString().replace(/:/g, '-') + "_" + file.originalname);
-
-
     },
 });
 
-
-const fileFilter = (req,file,cb)=>{
-    //reject a file if it's not a jpg,png, ot pdf
-    if(file.mimetype === "application/pdf")
-{
-    cb(null,true);
-}else{
-    cb(null,false);
-}
-
+// Function to filter files by type
+const fileFilter = (req, file, cb) => {
+    // Accept only PDF files
+    if (file.mimetype === "application/pdf") {
+        cb(null, true); // Accept the file
+    } else {
+        cb(null, false); // Reject the file
+    }
 };
 
-
-
+// Initialize multer with configuration
 const uploads = multer({
-    storage: storage,
+    storage: storage, // Specify the storage configuration
     limits: {
-        fileSizze: 1024*1024*5,
+        fileSize: 1024 * 1024 * 5, // Limit file size to 5MB
     },
-    fileFilter:fileFilter,
+    fileFilter: fileFilter, // Specify the file filter function
 });
-
-
 
 module.exports = uploads;

@@ -12,7 +12,8 @@ const pdfSchema = new Schema({
   file: {
     type: String,
     required: [true,"please provide a file"]
-  }
+  },
+  
   
 }, {
   timestamps: true,

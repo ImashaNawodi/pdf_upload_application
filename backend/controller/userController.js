@@ -68,11 +68,20 @@ const sendPasswordResetEmail = async (email, resetToken) => {
       to: email,
       subject: "Password Reset",
       html: `
-        <p>You have requested a password reset. Click the following link to reset your password:</p>
-        <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Password Reset Request</h2>
+          <p style="font-size: 16px; line-height: 1.6;">Hello,</p>
+          <p style="font-size: 16px; line-height: 1.6;">You have requested a password reset. Click the following link to reset your password:</p>
+          <p style="text-align: center;">
+            <a href="http://localhost:3000/reset-password/${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          </p>
+          <p style="font-size: 14px; color: #777;">If you did not request this, please ignore this email.</p>
+          <p style="font-size: 14px; color: #777;">Thank you,</p>
+          <p style="font-size: 14px; color: #777;">Pdf Manager</p>
+        </div>
       `,
     });
-
+    
     console.log("Password reset email sent successfully.");
   } catch (error) {
     console.error("Error sending password reset email:", error);
@@ -167,45 +176,7 @@ const generateAccountId = async () => {
   }
 };
 
-const viewUsers = async (req, res) => {
-  User.find().then((Users) => {
-    res.json(Users);
-  }).catch((err) => {
-    console.log(err);
-  });
-};
-
-// Update user details
-const updateUser = async (req, res) => {
-  const { accountId } = req.params;
-  const { fullName, email } = req.body;
-
-  const updateUser = {
- 
-   fullName,
-    email,
-  };
-
-  try {
-    console.log("Updating user with accountId:", accountId);
-    console.log("New user data:", updateUser);
-
-    const updatedUser = await User.findOneAndUpdate({ accountId }, updateUser, { new: true });
-    console.log("Updated user:", updatedUser);
-
-    if (!updatedUser) {
-      return res.status(404).json({ status: "User not found" });
-    }
-    res.status(200).json({ status: "User updated", user: updatedUser });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ status: "Error with updating User", error: err.message });
-  }
-};
-
 // Change password
-
-
 const changePassword = async (req, res) => {
   const { accountId } = req.params;
   const { currentPassword, newPassword } = req.body;
@@ -270,4 +241,4 @@ const deleteUser = async (req, res) => {
 
 
 
-module.exports = { signupUser, loginUser, viewUsers, requestPasswordReset, resetPassword, updateUser, changePassword, deleteUser };
+module.exports = { signupUser, loginUser, requestPasswordReset, resetPassword,changePassword, deleteUser };

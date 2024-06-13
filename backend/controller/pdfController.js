@@ -98,6 +98,7 @@ exports.previewPdf = async (req, res) => {
   }
 };
 
+// Download pdf
 exports.downloadPdf = async (req, res) => {
   try {
     const pdfId = req.params.id;
@@ -105,7 +106,7 @@ exports.downloadPdf = async (req, res) => {
     const pdf = await Pdf.findById(pdfId);
 
     if (!pdf) {
-      return res.status(404).json({ status: "notice not found" });
+      return res.status(404).json({ status: "Pdf is not found" });
     }
 
     const file = pdf.file;
@@ -116,7 +117,7 @@ exports.downloadPdf = async (req, res) => {
     console.error(err);
     res
       .status(500)
-      .json({ status: "Error while downloading notice", error: err.message });
+      .json({ status: "Error while downloading pdf", error: err.message });
   }
 };
 
@@ -126,11 +127,11 @@ exports.deletePdf = async (req, res) => {
   try {
     // Use await here to wait for the deletion to complete
     await Pdf.findByIdAndDelete(pdfId);
-    res.status(200).send({ status: "notice deleted" });
+    res.status(200).send({ status: "Pdf is deleted" });
   } catch (err) {
     // Use status 500 for server errors
     res
       .status(500)
-      .send({ status: "Error with delete notice", error: err.message });
+      .send({ status: "Error with delete pdf", error: err.message });
   }
 };
