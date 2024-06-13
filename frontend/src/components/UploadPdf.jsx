@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
 import FileUploadModal from "./FileUploadModel";
 
 export default function UploadPdf() {
-    const { user } = useAuthContext();
+  const { user } = useAuthContext();
   const { logout } = useLogout();
   const handleClick = () => {
     logout();

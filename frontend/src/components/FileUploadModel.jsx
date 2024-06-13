@@ -59,7 +59,7 @@ const FileUploadModal = () => {
       console.log("Upload response:", response.data);
 
      // Handle success
-     setNotification({ type: "success", message: "Files uploaded successfully" });
+     setNotification({ type: "success", message: "Pdf is Uploaded Successfully" });
 
      // Redirect or navigate to the desired page
      setTimeout(() => navigate(`/home/${accountId}`), 1000);

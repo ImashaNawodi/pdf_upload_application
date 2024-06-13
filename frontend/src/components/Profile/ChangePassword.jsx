@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useLogout } from "../../hooks/useLogout";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -8,6 +10,10 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const { accountId } = useParams();
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(null); // New state for notifications
+  const { user } = useAuthContext();
+  const { logout } = useLogout();
+  const navigate = useNavigate();
 
   const handleSave = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -31,13 +37,20 @@ const ChangePassword = () => {
         }
       );
       console.log("Password changed successfully:", response.data);
-      // You can display a success message to the user if needed
+      setNotification({
+        type: "success",
+        message: "Password Changed successfully",
+      });
+      setTimeout(() => navigate(`/home/${accountId}`), 4000);
     } catch (error) {
       console.error("Error changing password:", error.response.data);
       // You can display an error message to the user if needed
     } finally {
       setLoading(false); // Reset loading state regardless of success or failure
     }
+  };
+  const handleClick = () => {
+    logout();
   };
 
   return (
@@ -56,11 +69,28 @@ const ChangePassword = () => {
             className="h-20 w-20 rounded-full object-cover"
           />
         </div>
-        <div className="absolute top-0 right-0 mt-3 mr-5">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-            <a href="/">Home</a>
+        {user && (
+          <button
+            onClick={handleClick}
+            className="absolute bg-red-600 hover:bg-red-700 text-white p-3 top-0 right-0 mt-3 mr-5  py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            Log out
           </button>
-        </div>
+        )}
+        {!user && (
+          <button className="absolute bg-red-600 hover:bg-red-700 text-white p-3 top-0 right-0 mt-3 mr-5  py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+            <a href="login"> Sign In</a>
+          </button>
+        )}
+        {notification && (
+          <div
+            className={`fixed top-10 left-1/2 transform -translate-x-1/2 w-1/4 p-4 z-50 text-center ${
+              notification.type === "success" ? "bg-green-500" : "bg-red-500"
+            } text-white`}
+          >
+            {notification.message}
+          </div>
+        )}
         <form onSubmit={handleSave}>
           <div className="container flex-1 flex flex-col items-center max-w-md mx-auto px-4 py-20">
             <div
@@ -110,6 +140,12 @@ const ChangePassword = () => {
               >
                 {loading ? "Saving..." : "Save"}
               </button>
+              <p className="text-neutral-200 text-center">
+                Change Mind?{" "}
+                <Link to={`/home/${accountId}`} className="underline">
+                 Back
+                </Link>
+              </p>
             </div>
           </div>
         </form>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  const [notification, setNotification] = useState(null); // New state for notifications
 
   const handleSendMessage = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -19,10 +19,13 @@ const ForgotPassword = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        setShowAlert(true);
+        setNotification({
+          type: "success",
+          message: "Password Reset Link is Sent Successfully!",
+        });
       } else {
         console.error("Error:", data);
-        alert("Error sending reset password request. Please try again.");
+        alert("Error sending reset password link. Please try again.");
       }
     } catch (error) {
       console.error("Error sending reset password request:", error);
@@ -51,9 +54,13 @@ const ForgotPassword = () => {
             <a href="/">Home</a>
           </button>
         </div>
-        {showAlert && (
-          <div className="bg-green-200 text-green-700 p-4 mb-4 rounded">
-            Password Reset Link is Sent Successfully!
+        {notification && (
+          <div
+            className={`fixed top-10 left-1/2 transform -translate-x-1/2 w-1/4 p-4 z-50 text-center ${
+              notification.type === "success" ? "bg-green-500" : "bg-red-500"
+            } text-white`}
+          >
+            {notification.message}
           </div>
         )}
         <form onSubmit={handleSendMessage}>

@@ -6,8 +6,9 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import ManagePdf from "../../pages/UserHome";
 
-const DeleteAccount= () => {
+const DeleteAccount = () => {
   const [open, setOpen] = useState(true);
+  const [notification, setNotification] = useState(null);
   const cancelButtonRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,12 +20,17 @@ const DeleteAccount= () => {
       .delete(`http://localhost:8000/user/delete/${accountId}`)
       .then(() => {
         setLoading(false);
-        navigate(`/home/${accountId}`);
-        alert("Account is Successfully Deleted");
+        setNotification({
+          type: "success",
+          message: "Password Changed Successfully",
+        });
+        setTimeout(() => navigate(`/home/${accountId}`), 1000);
       })
       .catch((error) => {
         setLoading(false);
-        alert("Error deleting account: " + error.message);
+        // Handle errors
+        setNotification({ type: "error", message: "Error uploading files" });
+        setTimeout(() => 10);
       });
   };
 

@@ -6,19 +6,23 @@ import axios from "axios";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const { resetToken } = useParams();
+  const [notification, setNotification] = useState(null); // New state for notifications
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:5555/user/reset-password/${resetToken}`,
+        `http://localhost:8000/user/reset-password/${resetToken}`,
         {
           newPassword: password,
           resetToken: resetToken, // Include reset token in the request payload
         }
       );
-      alert(response.data.message); // You can replace this with a more user-friendly UI feedback
-    } catch (error) {
+      setNotification({
+        type: "success",
+        message: "Password Reset successfully",
+      });
+        } catch (error) {
       alert(error.response.data.error); // You can replace this with a more user-friendly UI feedback
     }
   };
@@ -39,7 +43,15 @@ const ResetPassword = () => {
             className="h-20 w-20 rounded-full object-cover"
           />
         </div>
-
+        {notification && (
+          <div
+            className={`fixed top-10 left-1/2 transform -translate-x-1/2 w-1/4 p-4 z-50 text-center ${
+              notification.type === "success" ? "bg-green-500" : "bg-red-500"
+            } text-white`}
+          >
+            {notification.message}
+          </div>
+        )}
         <form onSubmit={handleResetPassword}>
           <div className="container flex-1 flex flex-col items-center max-w-md mx-auto px-4 py-20">
             <div
