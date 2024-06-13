@@ -18,8 +18,16 @@ router.post('/password/reset/request', requestPasswordReset);
 router.post('/reset-password/:resetToken', resetPassword);
 
 router.put('/update/:accountId', updateUser);
+
+// Password reset request route
+router.post('/password/reset/request', requestPasswordReset);
+
+// Password reset route
+router.post('/reset-password/:resetToken', resetPassword);
+//Change Password
 router.post('/change/:accountId', changePassword);
 
+//Delete Account
 router.delete('/delete/:accountId', deleteUser);
 
 module.exports = router;

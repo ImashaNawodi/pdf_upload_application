@@ -107,9 +107,6 @@ const requestPasswordReset = async (req, res) => {
   }
 };
 
-
-
-
 // Reset password
 const resetPassword = async (req, res) => {
   const { resetToken, newPassword } = req.body;

@@ -1,4 +1,6 @@
 const Pdf = require("../model/pdfModel");
+const path = require("path");
+const fs = require("fs");
 
 // Upload a PDF file
 exports.upload = async (req, res) => {
@@ -66,17 +68,69 @@ exports.viewAllPdfs = async (req, res) => {
 
 // View one specific PDF for a particular user
 exports.previewPdf = async (req, res) => {
-  const pdfId = req.params.id;
-
   try {
+    const pdfId = req.params.id;
+
+    // Await the asynchronous call to find the guidance document
     const pdf = await Pdf.findById(pdfId);
+
     if (!pdf) {
-      return res.status(404).json({ status: "PDF not found" });
+      return res.status(404).json({ status: "pdf not found" });
     }
 
-    res.status(200).json(pdf);
+    const file = pdf.file;
+    const pdfFilePath = path.join(__dirname, "..", file);
+
+    // Check if the file exists
+    if (!fs.existsSync(pdfFilePath)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    // Set the content type header
+    res.setHeader("Content-Type", "application/pdf");
+
+    // Stream the file to the response
+    const stream = fs.createReadStream(pdfFilePath);
+    stream.pipe(res);
+  } catch (error) {
+    console.error("Error viewing PDF:", error);
+    res.status(500).send("An error occurred while viewing the PDF");
+  }
+};
+
+exports.downloadPdf = async (req, res) => {
+  try {
+    const pdfId = req.params.id;
+
+    const pdf = await Pdf.findById(pdfId);
+
+    if (!pdf) {
+      return res.status(404).json({ status: "notice not found" });
+    }
+
+    const file = pdf.file;
+    const filepath = path.join(__dirname, `../${file}`);
+
+    res.download(filepath);
   } catch (err) {
-    console.error("Error in previewPdf:", err.message);
-    res.status(500).json({ status: "Error with getting PDF", error: err.message });
+    console.error(err);
+    res
+      .status(500)
+      .json({ status: "Error while downloading notice", error: err.message });
+  }
+};
+
+// delete pdf
+exports.deletePdf = async (req, res) => {
+  let pdfId = req.params.id;
+  try {
+    // Use await here to wait for the deletion to complete
+    await Pdf.findByIdAndDelete(pdfId);
+    res.status(200).send({ status: "notice deleted" });
+  } catch (err) {
+    // Use status 500 for server errors
+    res
+      .status(500)
+      .send({ status: "Error with delete notice", error: err.message });
   }
 };

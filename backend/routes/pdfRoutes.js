@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { upload, viewAllPdfs, previewPdf } = require('../controller/pdfController');
+const { upload, viewAllPdfs, previewPdf,downloadPdf,deletePdf } = require('../controller/pdfController');
 const uploads = require('../middleware/multer');
 
 // Route to upload a PDF
@@ -12,7 +12,8 @@ router.post("/upload/:accountId", uploads.single('file'), (req, res) => {
 router.get('/view-all-pdf/:accountId', viewAllPdfs);
 
 // Route to view a specific PDF
-router.get("/view-pdf/:accountId/:id", previewPdf);
+router.get('/viewPdf/:id', previewPdf);
+router.get("/download/:id", downloadPdf);
+router.delete("/delete/:id", deletePdf);
 
- 
   module.exports = router;
