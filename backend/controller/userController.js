@@ -2,10 +2,10 @@ const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const validator = require('validator');
+const validator = require("validator");
 
 const createAuthToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2d" });
 };
 
 const createResetToken = (_id) => {
@@ -26,9 +26,51 @@ const loginUser = async (req, res) => {
   }
 };
 
-// signup user
+// Function to send email after successful signup
+const sendSignupEmail = async (email, accountId) => {
+  try {
+    // Create a nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      service: "Gmail",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.USER,
+        pass: process.env.PASSWORD,
+      },
+      tls: { rejectUnauthorized: false },
+    });
+
+    // Send email
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Welcome to PDF Manager",
+      html: `
+     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
+  <h2 style="color: #333;">Welcome to PDF Manager!</h2>
+  <p style="font-size: 16px; line-height: 1.6;">Hello,</p>
+  <p style="font-size: 16px; line-height: 1.6;">Thank you for signing up with PDF Manager. Your account has been successfully created.</p>
+  <p style="font-size: 14px; color: #333; font-weight: bold;">Your account ID is: ${accountId}. Please remember it for login next time.</p>
+  <p style="font-size: 14px; color: #777;">If you have any questions or need assistance, please feel free to contact us.</p>
+  <p style="font-size: 14px; color: #777;">Thank you,</p>
+  <p style="font-size: 14px; color: #777;">PDF Manager Team</p>
+</div>
+
+      `,
+    });
+
+    console.log("Email sent successfully.");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Error sending email");
+  }
+};
+
+// Signup user
 const signupUser = async (req, res) => {
-  const { email, password,fullName } = req.body;
+  const { email, password, fullName } = req.body;
   try {
     // Generate account ID
     const accountId = await generateAccountId();
@@ -36,11 +78,16 @@ const signupUser = async (req, res) => {
     // Sign up user with the generated account ID
     const user = await User.signup(email, password, fullName, accountId);
 
-    // create an authentication token
+    // Send signup email
+    await sendSignupEmail(email, accountId); // Pass accountId here
+
+    // Create an authentication token
     const authToken = createAuthToken(user._id);
 
-    // Return the user ID along with other data
-    res.status(200).json({ userId: user._id, email, authToken, fullName, accountId });
+    // Return response with user data and token
+    res
+      .status(200)
+      .json({ userId: user._id, email, authToken, fullName, accountId });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -81,7 +128,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
         </div>
       `,
     });
-    
+
     console.log("Password reset email sent successfully.");
   } catch (error) {
     console.error("Error sending password reset email:", error);
@@ -109,7 +156,9 @@ const requestPasswordReset = async (req, res) => {
     // Send password reset email
     await sendPasswordResetEmail(email, resetToken);
 
-    res.status(200).json({ message: "Password reset email sent successfully." });
+    res
+      .status(200)
+      .json({ message: "Password reset email sent successfully." });
   } catch (error) {
     console.error("Error requesting password reset:", error);
     res.status(400).json({ error: error.message });
@@ -131,10 +180,10 @@ const resetPassword = async (req, res) => {
     if (!user) {
       throw new Error("User not found");
     }
-// Check password strength
-if (!isStrongPassword(newPassword)) {
-  throw new Error("Password is not strong enough");
-}
+    // Check password strength
+    if (!isStrongPassword(newPassword)) {
+      throw new Error("Password is not strong enough");
+    }
     // Encrypt the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -158,17 +207,21 @@ const isStrongPassword = (password) => {
 // Refactored generateAccountId function to be used internally
 const generateAccountId = async () => {
   try {
-    const latestAccount = await User.findOne({}, {}, { sort: { accountId: -1 } });
+    const latestAccount = await User.findOne(
+      {},
+      {},
+      { sort: { accountId: -1 } }
+    );
 
     // If latestAccount exists, increment the account ID
     if (latestAccount && latestAccount.accountId) {
       const lastIdNumber = parseInt(latestAccount.accountId.slice(3), 10);
       const newIdNumber = lastIdNumber + 1;
-      const newAccountId = `ACC${newIdNumber.toString().padStart(3, '0')}`;
+      const newAccountId = `ACC${newIdNumber.toString().padStart(3, "0")}`;
       return newAccountId;
     } else {
       // If no existing accounts found, start with the first ID
-      return 'ACC001';
+      return "ACC001";
     }
   } catch (error) {
     console.error("Error generating accountId:", error);
@@ -190,17 +243,24 @@ const changePassword = async (req, res) => {
 
     // Verify current password
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ error: "Current password and new password are required" });
+      return res
+        .status(400)
+        .json({ error: "Current password and new password are required" });
     }
 
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
     if (!isPasswordValid) {
       return res.status(400).json({ error: "Current password is incorrect" });
     }
 
     // Check password strength
     if (!isStrongPassword(newPassword)) {
-      return res.status(400).json({ error: "New password is not strong enough" });
+      return res
+        .status(400)
+        .json({ error: "New password is not strong enough" });
     }
 
     // Encrypt the new password
@@ -238,7 +298,11 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
-
-
-module.exports = { signupUser, loginUser, requestPasswordReset, resetPassword,changePassword, deleteUser };
+module.exports = {
+  signupUser,
+  loginUser,
+  requestPasswordReset,
+  resetPassword,
+  changePassword,
+  deleteUser,
+};

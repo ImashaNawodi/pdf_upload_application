@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
+require('dotenv').config(); 
 
-mongoose.connect('mongodb://127.0.0.1:27017/file_upload_app') 
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('DB is connected!');
   })
   .catch((ex) => {
     console.log('DB connection failed: ', ex);
   });
-

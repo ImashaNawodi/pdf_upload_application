@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSignup } from "../hooks/useSignup";
+import { useLogin } from "../hooks/useLogin";
 
-const SignUp = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const { signup, error, isLoading } = useSignup();
+  const [accountId, setAccountId] = useState("");
+  const { login, error, isLoading } = useLogin();
 
-  const handleSignUp = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    await signup(fullName, email, password);
+    try {
+      await login(email, password, accountId);
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
+
   return (
     <div>
       <div
@@ -34,7 +38,7 @@ const SignUp = () => {
             <a href="/">Home</a>
           </button>
         </div>
-        <form onSubmit={handleSignUp}>
+        <form onSubmit={handleLogin}>
           <div className="container flex-1 flex flex-col items-center max-w-md mx-auto px-4 py-20">
             <div
               className="flex flex-col p-8 rounded-2xl shadow-md bg-cover bg-center w-full"
@@ -45,53 +49,64 @@ const SignUp = () => {
               }}
             >
               <h1 className="text-center text-4xl mb-8 text-neutral-200">
-                Sign Up
+                Login
               </h1>
-
               <input
-                id="name"
+                id="accountId"
                 type="text"
-                onChange={(e) => setFullName(e.target.value)}
-                value={fullName}
+                value={accountId}
+                onChange={(e) => setAccountId(e.target.value)}
+                placeholder="ACCXXX"
                 className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="Name"
+                autoFocus
+                autoComplete="accountId"
+                required
               />
-
               <input
                 id="email"
                 type="email"
-                onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
+                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+                autoComplete="email"
+                required
               />
-
               <input
                 id="password"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
                 value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
                 minLength="6"
                 required
-                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="Password"
               />
-
+              <div className="w-full mb-6 text-right">
+                <Link
+                  to="/forgotPassword"
+                  className="underline text-gray-400 hover:text-white"
+                >
+                  Forget Password?
+                </Link>
+              </div>
               <button
                 type="submit"
                 className="relative inline-flex items-center justify-center w-full p-3 mb-6 text-lg font-medium text-neutral-200 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
               >
-                {isLoading ? "Creating..." : "Create Account"}
+                {isLoading ? "Logging in..." : "Login"}
               </button>
 
-              {error && <div className="text-red-500">{error}</div>}
+              {error && <div className="error text-neutral-200">{error}</div>}
 
-              <p className="text-neutral-200 text-center">
-                Already have an account?{" "}
-                <Link to="/login" className="underline">
-                  Login here
-                </Link>
-              </p>
+              <div className="flex justify-between items-center w-full text-neutral-200">
+                <p>
+                  Don't have an account yet?{" "}
+                  <Link to="/signup" className="underline">
+                    Sign Up
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </form>
@@ -105,4 +120,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;

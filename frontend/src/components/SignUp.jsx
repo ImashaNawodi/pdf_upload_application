@@ -1,22 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useLogin } from "../hooks/useLogin";
+import { useSignup } from "../hooks/useSignup";
 
-const Login = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [accountId, setAccountId] = useState("");
-  const { login, error, isLoading } = useLogin();
+  const [fullName, setFullName] = useState("");
+  const { signup, error, isLoading } = useSignup();
 
-  const handleLogin = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    try {
-      await login(email, password, accountId);
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
 
+    await signup(fullName, email, password);
+   
+
+  };
   return (
     <div>
       <div
@@ -38,7 +36,7 @@ const Login = () => {
             <a href="/">Home</a>
           </button>
         </div>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSignUp}>
           <div className="container flex-1 flex flex-col items-center max-w-md mx-auto px-4 py-20">
             <div
               className="flex flex-col p-8 rounded-2xl shadow-md bg-cover bg-center w-full"
@@ -49,61 +47,53 @@ const Login = () => {
               }}
             >
               <h1 className="text-center text-4xl mb-8 text-neutral-200">
-                Login
+                Sign Up
               </h1>
+
               <input
-                id="accountId"
+                id="name"
                 type="text"
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                placeholder="ACCXXX"
+                onChange={(e) => setFullName(e.target.value)}
+                value={fullName}
                 className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-                autoFocus
-                autoComplete="accountId"
-                required
+                placeholder="Name"
               />
+
               <input
                 id="email"
                 type="email"
-                value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                value={email}
                 className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-                autoComplete="email"
-                required
+                placeholder="Email"
               />
+
               <input
                 id="password"
                 type="password"
-                value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+                value={password}
                 minLength="6"
                 required
+                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+                placeholder="Password"
               />
-              <div className="w-full mb-6 text-right">
-                <Link to="/forgotPassword" className="underline text-gray-400 hover:text-white">
-                  Forget Password?
-                </Link>
-              </div>
+
               <button
                 type="submit"
                 className="relative inline-flex items-center justify-center w-full p-3 mb-6 text-lg font-medium text-neutral-200 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
               >
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Creating..." : "Create Account"}
               </button>
 
-              {error && <div className="error text-neutral-200">{error}</div>}
+              {error && <div className="text-red-500">{error}</div>}
 
-              <div className="flex justify-between items-center w-full text-neutral-200">
-                <p>
-                  Don't have an account yet?{" "}
-                  <Link to="/signup" className="underline">
-                    Sign Up
-                  </Link>
-                </p>
-              </div>
+              <p className="text-neutral-200 text-center">
+                Already have an account?{" "}
+                <Link to="/login" className="underline">
+                  Login here
+                </Link>
+              </p>
             </div>
           </div>
         </form>
@@ -117,4 +107,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

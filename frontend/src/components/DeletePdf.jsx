@@ -4,13 +4,14 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import ManagePdf from "../pages/UserHome";
+import UserHome from "../pages/UserHome";
 
 const DeletePdf = () => {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [notification, setNotification] = useState(null); // New state for notifications
   const { id, accountId } = useParams();
 
   const handleDeletePdf = () => {
@@ -19,13 +20,19 @@ const DeletePdf = () => {
       .delete(`http://localhost:8000/pdf/delete/${id}`)
       .then(() => {
         setLoading(false);
-        navigate(`/home/${accountId}`);
-        alert("PDF deleted successfully");
+        // Handle success
+        setNotification({
+          type: "success",
+          message: "Files deleted successfully",
+        });
+
+        // Redirect or navigate to the desired page
+        setTimeout(() => navigate(`/home/${accountId}`), 4000);
       })
       .catch((error) => {
         setLoading(false);
-        alert("Error deleting PDF: " + error.message);
-      });
+   // Handle errors
+   setNotification({ type: "error", message: "Error deleteing file" });      });
   };
 
   const handleOutsideClick = () => {
@@ -35,7 +42,16 @@ const DeletePdf = () => {
 
   return (
     <div>
-      <ManagePdf />
+      <UserHome />
+      {notification && (
+        <div
+        className={`fixed top-10 left-1/2 transform -translate-x-1/2 w-1/4 p-4 z-50 text-center ${
+          notification.type === "success" ? "bg-green-500" : "bg-red-500"
+          } text-white`}
+        >
+          {notification.message}
+        </div>
+      )}
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"

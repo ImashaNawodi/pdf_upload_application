@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import axios from "axios";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useLogout } from "../hooks/useLogout";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../../../hooks/useLogout";
+import { useAuthContext } from "../../../hooks/useAuthContext";
 
 // Set workerSrc for pdfjs
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;

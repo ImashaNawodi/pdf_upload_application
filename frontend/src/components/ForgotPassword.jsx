@@ -73,8 +73,8 @@ const ForgotPassword = () => {
                 className="mb-4 text-gray-400 leading-loose text-sm wow fadeInUp"
                 data-wow-delay="0.6s"
               >
-                Enter the email address you used to create your account to receive instructions on resetting your password.
-
+                Enter the email address you used to create your account to
+                receive instructions on resetting your password.
               </p>
 
               <input

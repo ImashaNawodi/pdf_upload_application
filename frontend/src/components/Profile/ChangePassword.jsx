@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { accountId } = useParams();
-  const [loading, setLoading] = useState(false);;
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -86,34 +86,30 @@ const ChangePassword = () => {
               />
               <input
                 id="password"
-              type="password"
+                type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder="New Password"
                 minLength="6"
                 required
-              />  <input
-              id="password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
-              className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
-              minLength="6"
-              required
-            />
-             
-             
+              />{" "}
+              <input
+                id="password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                className="w-full mb-6 p-3 rounded-lg text-gray-200 placeholder-gray-400 border border-gray-500 bg-transparent focus:outline-none focus:ring-2 focus:ring-gray-400"
+                minLength="6"
+                required
+              />
               <button
                 type="submit"
                 className="relative inline-flex items-center justify-center w-full p-3 mb-6 text-lg font-medium text-neutral-200 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
               >
                 {loading ? "Saving..." : "Save"}
               </button>
-
-
-             
             </div>
           </div>
         </form>

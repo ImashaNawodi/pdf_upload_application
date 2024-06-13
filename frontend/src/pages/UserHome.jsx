@@ -36,7 +36,7 @@ const UserHome = () => {
     pdf.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPdfs = filteredPdfs.slice(indexOfFirstItem, indexOfLastItem);
@@ -107,6 +107,7 @@ const UserHome = () => {
           />
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+        
               <Link
                 to={`/changePassword/${accountId}`}
                 className="block px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-400"
@@ -119,7 +120,6 @@ const UserHome = () => {
               >
                 Delete Account
               </Link>
-            
             </div>
           )}
         </div>
@@ -132,7 +132,7 @@ const UserHome = () => {
               >
                 Log out
               </button>
-              <p className="text-3xl text-white mt-2">Hello, {user.fullName}</p>
+              <p className="text-3xl text-white mt-3">Hello, {user.fullName}</p>
             </>
           ) : (
             <div className="absolute top-0 right-0 mt-3 mr-5">
@@ -297,7 +297,7 @@ const UserHome = () => {
                               </button>
 
                               <Link
-                                to={`/DeletePdf/${pdf._id}`}
+                                to={`/DeletePdf/${pdf.accountId}/${pdf._id}`}
                                 className="px-2 py-1 text-sm text-red-500 flex items-center"
                               >
                                 <MdDelete className="text-2xl text-red-600" />

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
+
 const HomePage = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
   const { user } = useAuthContext();
   const { logout } = useLogout();
   const handleClick = () => {
@@ -17,13 +17,13 @@ const HomePage = () => {
             "linear-gradient(rgb(0 0 0 / 60%), rgb(0 0 0 / 60%)), url('/assets/1.jpeg')",
         }}
       >
-      <div className="absolute top-0 left-0 mt-5 ml-5">
-  <img
-    src="/assets/OIP.jpeg"
-    alt="Background Image"
-    className="h-20 w-20 rounded-full object-cover"
-  />
-</div>
+        <div className="absolute top-0 left-0 mt-5 ml-5">
+          <img
+            src="/assets/OIP.jpeg"
+            alt="Background Image"
+            className="h-20 w-20 rounded-full object-cover"
+          />
+        </div>
 
         {user && (
           <button
@@ -62,30 +62,23 @@ const HomePage = () => {
         <div class="space-y-5 p-5">
           <p class="text-white font-bold text-4xl">Secure Uploads</p>
           <p class="text-white font-semiboldbold text-xl">
-          Easily upload your PDF documents securely.
-
+            Easily upload your PDF documents securely.
           </p>
         </div>
         <div>
-          <img
-          
-            src="/assets/6.jpg"          />
+          <img src="/assets/6.jpg" />
         </div>
       </div>
       <hr />
       <div class="h-screen flex items-center justify-center bg-black p-5">
         <div>
-          <img
-             class="our-story-card-img"
-            src="/assets/4.jpeg"
-          />
+          <img class="our-story-card-img" src="/assets/4.jpeg" />
         </div>
         <div class="space-y-5 p-5">
-          <p class="text-white font-bold text-4xl">
-          Effortless Viewing
-          </p>
+          <p class="text-white font-bold text-4xl">Effortless Viewing</p>
           <p class="text-white font-semiboldbold text-xl">
-          View your uploaded PDFs effortlessly anytime, anywhere.          </p>
+            View your uploaded PDFs effortlessly anytime, anywhere.{" "}
+          </p>
         </div>
       </div>
       <hr />
@@ -93,8 +86,7 @@ const HomePage = () => {
         <div class="space-y-5 p-5">
           <p class="text-white font-bold text-4xl">User-Friendly Interface</p>
           <p class="text-white font-semiboldbold text-xl">
-          Enjoy a simple and intuitive user interface.
-
+            Enjoy a simple and intuitive user interface.
           </p>
         </div>
         <div>
@@ -102,13 +94,12 @@ const HomePage = () => {
             alt=""
             class="our-story-card-img"
             data-uia="our-story-card-img"
-            src="/assets/8.png"          
-
+            src="/assets/8.png"
           />
         </div>
       </div>
       <hr />
-      
+
       <hr />
       <footer className="bg-gray-900 text-white text-center py-5">
         <p>&copy; 2024 PDF Vault. All rights reserved.</p>

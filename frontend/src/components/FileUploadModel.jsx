@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate,useParams } from "react-router-dom"; 
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const FileUploadModal = () => {
   const [files, setFiles] = useState({});
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
   const { accountId } = useParams();
 
   const addFile = (file) => {
-    const isImage = file.type.match("image.*");
     const objectURL = URL.createObjectURL(file);
 
     setFiles((prevFiles) => ({
@@ -58,15 +58,18 @@ const FileUploadModal = () => {
       );
       console.log("Upload response:", response.data);
 
-      // Handle success, e.g., show a success message
-      alert("Files uploaded successfully");
+     // Handle success
+     setNotification({ type: "success", message: "Files uploaded successfully" });
 
-      // Redirect or navigate to the desired page
-      navigate(`/home/${accountId}`);
+     // Redirect or navigate to the desired page
+     setTimeout(() => navigate(`/home/${accountId}`), 1000);
     } catch (error) {
       console.error("Error uploading files:", error);
-      // Handle errors, e.g., show an error message
-      alert("Error uploading files");
+
+     // Handle errors
+     setNotification({ type: "error", message: "Error uploading files" });
+     setTimeout(() => 10); 
+
     }
   };
   const handleCancel = () => {
@@ -98,7 +101,17 @@ const FileUploadModal = () => {
 
   return (
     <div className="flex mt-3 items-center h-screen">
-      <div className="container mx-auto max-w-screen-lg h-auto  mt-28  mb-20">
+         {notification && (
+        <div
+        className={`fixed top-10 left-1/2 transform -translate-x-1/2 w-1/4 p-4 z-50 text-center ${
+          notification.type === "success" ? "bg-green-500" : "bg-red-500"
+          } text-white`}
+        >
+          {notification.message}
+        </div>
+      )}
+       <div className="container mx-auto max-w-screen-lg h-auto mt-28 mb-20">
+       
         <article
           aria-label="File Upload Modal"
           className="relative h-full flex flex-col bg-white shadow-xl rounded-md "
@@ -109,8 +122,9 @@ const FileUploadModal = () => {
         >
           <div
             id="overlay"
-            className="w-full h-full absolute top-0 left-0 pointer-events-none z-50 flex flex-col items-center justify-center rounded-md"
+            className="w-1/4 h-full absolute top-0 left-0 pointer-events-none z-50 flex flex-col items-center justify-center rounded-md"
           ></div>
+
 
           <section className=" overflow-auto p-8  h-full flex flex-col">
             <div className="border-dashed border-2 border-gray-400 pd-8">
@@ -153,9 +167,7 @@ const FileUploadModal = () => {
                         <path d="M19.479 10.092c-.212-3.951-3.473-7.092-7.479-7.092-4.005 0-7.267 3.141-7.479 7.092-2.57.463-4.521 2.706-4.521 5.408 0 3.037 2.463 5.5 5.5 5.5h13c3.037 0 5.5-2.463 5.5-5.5 0-2.702-1.951-4.945-4.521-5.408zm-7.479-1.092l4 4h-3v4h-2v-4h-3l4-4z" />
                       </svg>
                     </i>
-                    <p className="text-lg text-black">
-                      Drop files to upload
-                    </p>
+                    <p className="text-lg text-black">Drop files to upload</p>
                     <img
                       className=" w-32 justify-center "
                       src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
@@ -164,7 +176,6 @@ const FileUploadModal = () => {
                     <span className="text-small text-gray-500 mb-2">
                       No files selected
                     </span>
-                
                   </li>
                 )}
                 {Object.keys(files).map((objectURL) => (
@@ -224,25 +235,23 @@ const FileUploadModal = () => {
                 ))}
               </ul>
             </div>
-          
           </section>
           <footer className="flex justify-end px-8 pb-8 pt-4">
-  <button
-    id="submit"
-    className="bg-black  text-white py-2 px-4 rounded-md mr-4"
-    onClick={handleSubmit}
-  >
-    Upload now
-  </button>
-  <button
-    id="cancel"
-    className="bg-gray-500 hover:bg-gray-300 text-white py-2 px-4 rounded-md"
-    onClick={handleCancel}
-  >
-    Cancel
-  </button>
-</footer>
-
+            <button
+              id="submit"
+              className="bg-black  text-white py-2 px-4 rounded-md mr-4"
+              onClick={handleSubmit}
+            >
+              Upload now
+            </button>
+            <button
+              id="cancel"
+              className="bg-gray-500 hover:bg-gray-300 text-white py-2 px-4 rounded-md"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </footer>
         </article>
       </div>
     </div>

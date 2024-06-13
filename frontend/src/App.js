@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from "./components/HomePage";
-import SignUpPage from "./pages/SignUp";
-import LoginPage from "./pages/LoginPage";
-import ManagePdf from "./pages/UserHome";
+import { useAuthContext } from "./hooks/useAuthContext";
+
+import Home from "./pages/HomePage";
+import LoginPage from "./components/LoginPage";
+import UserHome from "./pages/UserHome";
 import UploadPdf from "./components/UploadPdf";
 import ViewPdf from "./components/ViewPdf";
 import DeletePdf from "./components/DeletePdf";
-import { useAuthContext } from "./hooks/useAuthContext";
 import ForgotPassword from "./components/ForgotPassword";
-import ResetPassword from "./components/ResetPassword";
+import ResetPassword from "./components/Profile/ResetPassword";
 import ChangePassword from "./components/Profile/ChangePassword";
 import DeleteAccount from "./components/Profile/DeleteAccount";
+import SignUp from "./components/SignUp";
 
 function App() {
   const { user } = useAuthContext();
@@ -25,14 +26,18 @@ function App() {
     <Router>
       <Routes>
 
+        {/* Public Route: Homepage */}
         <Route path="/" element={<Home />} />
+
+        {/* Public Route: Signup Page */}
         <Route
           path="/signup"
           element={
-            !user ? <SignUpPage /> : <Navigate to={`/home/${user.accountId}`} />
+            !user ? <SignUp /> : <Navigate to={`/home/${user.accountId}`} />
           }
         />
 
+        {/* Public Route: Login Page */}
         <Route
           path="/login"
           element={
@@ -40,14 +45,28 @@ function App() {
           }
         />
 
-        <Route path="/home/:accountId" element={<ManagePdf />} />
+        {/* Private Route: User Home Page */}
+        <Route path="/home/:accountId" element={<UserHome />} />
+
+        {/* Private Route: Upload PDF Page */}
         <Route path="/UploadPdf/:accountId" element={<UploadPdf />} />
+
+        {/* Private Route: View PDF Page */}
         <Route path="/ViewPdf/:accountId/:pdfId" element={<ViewPdf />} />
-        <Route path="/deletePdf/:id" element={<DeletePdf />} />
+
+        {/* Private Route: Delete PDF Page */}
+        <Route path="/deletePdf/:accountId/:id" element={<DeletePdf />} />
+        
+        {/* Public Route: Forgot Password Page */}
         <Route path="/forgotPassword" element={< ForgotPassword/>} />
 
+        {/* Public Route: Reset Password Page */}
         <Route path="/reset-password/:resetToken" element={<ResetPassword/>} />
+
+        {/* Private Route: Change Password Page */}
         <Route path="/changePassword/:accountId" element={<ChangePassword />} />
+
+        {/* Private Route: Delete Account Page */}
         <Route path="/deleteAccount/:accountId" element={<DeleteAccount />} />
 
       </Routes>
