@@ -65,11 +65,11 @@ https://github.com/ImashaNawodi/pdf_upload_application.git
 
    - Create a `.env` file in the `backend` directory.
    - Add the following variables:
-       SECRET=your_jwt_secret
-       RESET_SECRET=your_reset_jwt_secret
-       USER=your_email@gmail.com
-       PASSWORD=your_email_password
-       MONGODB_URI=your_mongodb_connection_string
+       - SECRET=your_jwt_secret
+       - RESET_SECRET=your_reset_jwt_secret
+       - USER=your_email@gmail.com
+       - PASSWORD=your_email_password
+       - MONGODB_URI=your_mongodb_connection_string
 
 
 4. **Start the backend server:**
