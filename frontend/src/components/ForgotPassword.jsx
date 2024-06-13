@@ -98,7 +98,7 @@ const ForgotPassword = () => {
       </div>
       <hr />
       <footer className="bg-gray-900 text-white text-center py-5">
-        <p>&copy; 2024 PDF Vault. All rights reserved.</p>
+        <p>&copy; 2024 PDF Manager. All rights reserved.</p>
       </footer>
       <hr />
     </div>

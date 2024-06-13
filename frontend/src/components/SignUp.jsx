@@ -10,11 +10,9 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
     await signup(fullName, email, password);
-   
-
   };
+
   return (
     <div>
       <div
@@ -79,6 +77,11 @@ const SignUp = () => {
                 placeholder="Password"
               />
 
+              <p className="text-neutral-200 text-center mb-6">
+                After signing up, please check your email to find out your
+                Account ID.
+              </p>
+
               <button
                 type="submit"
                 className="relative inline-flex items-center justify-center w-full p-3 mb-6 text-lg font-medium text-neutral-200 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -100,7 +103,7 @@ const SignUp = () => {
       </div>
       <hr />
       <footer className="bg-gray-900 text-white text-center py-5">
-        <p>&copy; 2024 PDF Vault. All rights reserved.</p>
+        <p>&copy; 2024 PDF Manager. All rights reserved.</p>
       </footer>
       <hr />
     </div>

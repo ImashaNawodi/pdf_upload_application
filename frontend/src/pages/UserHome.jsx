@@ -107,7 +107,12 @@ const UserHome = () => {
           />
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
-        
+              <Link
+                to={`/home/${accountId}`}
+                className="block px-4 py-2 bg-gray-300 text-gray-800"
+              >
+                Account Id : {accountId}
+              </Link>
               <Link
                 to={`/changePassword/${accountId}`}
                 className="block px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-400"
@@ -329,7 +334,7 @@ const UserHome = () => {
       </div>
       <hr />
       <footer className="bg-gray-900 text-white text-center py-5">
-        <p>&copy; 2024 PDF Vault. All rights reserved.</p>
+        <p>&copy; 2024 PDF Manager. All rights reserved.</p>
       </footer>
       <hr />
     </div>
